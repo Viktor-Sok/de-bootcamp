@@ -1,0 +1,5 @@
+root@b4466e3fb0ce:/# pip list
+Package Version
+------- -------
+pip     24.3.1
+
