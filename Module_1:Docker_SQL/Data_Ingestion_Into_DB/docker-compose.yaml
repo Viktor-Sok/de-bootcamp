@@ -1,0 +1,54 @@
+services:
+  db:
+    container_name: postgres
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: 'ny_taxi'
+    ports:
+      - '5433:5432'
+    volumes:
+      - vol-pgdata:/var/lib/postgresql/data
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready", "-U", "postgres"]
+#      interval: 5s
+#      timeout: 5s
+#      retries: 2
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "pgadmin@pgadmin.com"
+      PGADMIN_DEFAULT_PASSWORD: "pgadmin"
+    ports:
+      - "8080:80"
+    volumes:
+      - vol-pgadmin_data:/var/lib/pgadmin
+#    depends_on:
+#      db:
+#        condition: service_healthy
+
+  ingest_data:
+    container_name: ingest_data
+    image: ingest_data:1.0
+    command: [ # appends to the ENTRYPOINT of a Dockerfile or overrides the CMD
+    "--user", "postgres",
+    "--password", "postgres",
+    "--host", "postgres",
+    "--port", "5432",
+    "--db",  "ny_taxi",
+    "--table_names",  "taxi_trips",
+    "--table_names",  "taxi_zones",
+    "--urls", "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/green/green_tripdata_2019-10.csv.gz",
+    "--urls", "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/misc/taxi_zone_lookup.csv"
+    ]
+#    depends_on:
+#      db:
+#        condition: service_healthy
+
+volumes:
+  vol-pgdata:
+    name: vol-pgdata
+  vol-pgadmin_data:
+    name: vol-pgadmin_data
