@@ -1,0 +1,1 @@
+![](../assets/db_connection.png)
