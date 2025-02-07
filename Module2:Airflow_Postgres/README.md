@@ -6,7 +6,10 @@
 `curl -LfO 'https://airflow.apache.org/docs/apache-airflow/2.10.4/docker-compose.yaml'`
 2. Extend airflow docker image by writing custom `Dockerfile` and add the following field in  _docker-compose.yaml_
 ```
+  ...
+  # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.10.4}
   build: .
+  ...
 ```
 Dockerfile with necessary dependencies:
 ```
@@ -18,6 +21,14 @@ RUN pip install apache-airflow==${AIRFLOW_VERSION} -r requirements.txt
 ```
 mkdir -p ./dags ./logs ./plugins ./config
 echo -e "AIRFLOW_UID=$(id -u)" > .env
+```
+Modify _docker-compose.yaml_ for loading environment variables from _.env_
+```
+  ...
+  user: "${AIRFLOW_UID:-50000}:0"
+  env_file:
+    - .env
+  ...
 ```
 The folders _dags_, _logs_, _plugins_ and _config_ can also be found inside Airflow worker container:
 ![](assets/inside_airflow_worker_container.png)
