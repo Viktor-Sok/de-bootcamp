@@ -1,0 +1,5 @@
+pyarrow
+fastparquet
+pandas
+psycopg2-binary
+sqlalchemy

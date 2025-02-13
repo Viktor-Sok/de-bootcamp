@@ -1,0 +1,12 @@
+services:
+  terraform-yc:
+    build: . # build image from Dockerfile in the same folder
+    environment:
+        - YC_TOKEN
+        - YC_CLOUD_ID
+        - YC_FOLDER_ID
+    volumes:
+        - ./:/terraform/
+    
+     #volumes:
+     #  terraform_vol:
